@@ -1,68 +1,28 @@
 # quarkus-parameter-map-issue
 
-This project uses Quarkus, the Supersonic Subatomic Java Framework.
+The purpose of this project is to highlight an issue for quarkus with mongodb.
 
-If you want to learn more about Quarkus, please visit its website: <https://quarkus.io/>.
+This issue is similar to issue number [30222](https://github.com/quarkusio/quarkus/issues/30222)
 
-## Running the application in dev mode
+## Steps to reproduce
 
-You can run your application in dev mode that enables live coding using:
+1. Run the application
+2. Go to swagger ui at http://localhost:8080/q/swagger-ui
+3. Run the `/company/seed` endpoint so that there is some data in the db
+4. Now run the `/company/issueFindByEmail` endpoint
+5. It should throw an error.
 
-```shell script
-./mvnw compile quarkus:dev
+The issue occurs when I want to map the parameter by complex keys, like abc.xyz 
+in this case I'm supplying a hashmap with key `address.email` and 
+trying to use this in the `.find` method. But it is throwing an error.
+
+The exact same code works when I send a hashmap with key `email` and passing it in `.find`
+
+
+Here is a sample of what error is thrown when executing the /company/issueFindByEmail endpoint
 ```
-
-> **_NOTE:_**  Quarkus now ships with a Dev UI, which is available in dev mode only at <http://localhost:8080/q/dev/>.
-
-## Packaging and running the application
-
-The application can be packaged using:
-
-```shell script
-./mvnw package
+{
+  "details": "Error id dce1fe49-2169-4af3-9955-4a8fe5278ec9-1, org.bson.json.JsonParseException: JSON reader was expecting a value but found ':'.",
+  "stack": "org.bson.json.JsonParseException: JSON reader was expecting a value but found ':'.\r\n\tat org.bson.json.JsonReader.readBsonType(JsonReader.java:262)\r\n\tat org.bson.codecs.DocumentCodec.decode(DocumentCodec.java:174)\r\n\tat org.bson.codecs.DocumentCodec.decode(DocumentCodec.java:44)\r\n\tat org.bson.Document.parse(Document.java:129)\r\n\tat org.bson.Document.parse(Document.java:114)\r\n\tat io.quarkus.mongodb.panache.common.reactive.runtime.ReactiveMongoOperations.find(ReactiveMongoOperations.java:493)\r\n\tat io.quarkus.mongodb.panache.common.reactive.runtime.ReactiveMongoOperations.find(ReactiveMongoOperations.java:488)\r\n\tat com.minhazul.CompanyRepository.find(CompanyRepository.java)\r\n\tat com.minhazul.CompanyRepository.issueFindByEmail(CompanyRepository.java:36)\r\n\tat com.minhazul.CompanyRepository_ClientProxy.issueFindByEmail(Unknown Source)\r\n\tat com.minhazul.CompanyResource.issueFindByEmail(CompanyResource.java:44)\r\n\tat com.minhazul.CompanyResource$quarkusrestinvoker$issueFindByEmail_8e32f2256dd81a5da16a81e5445a1b803a7bc75b.invoke(Unknown Source)\r\n\tat org.jboss.resteasy.reactive.server.handlers.InvocationHandler.handle(InvocationHandler.java:29)\r\n\tat io.quarkus.resteasy.reactive.server.runtime.QuarkusResteasyReactiveRequestContext.invokeHandler(QuarkusResteasyReactiveRequestContext.java:141)\r\n\tat org.jboss.resteasy.reactive.common.core.AbstractResteasyReactiveContext.run(AbstractResteasyReactiveContext.java:147)\r\n\tat org.jboss.resteasy.reactive.server.handlers.RestInitialHandler.beginProcessing(RestInitialHandler.java:48)\r\n\tat org.jboss.resteasy.reactive.server.vertx.ResteasyReactiveVertxHandler.handle(ResteasyReactiveVertxHandler.java:23)\r\n\tat org.jboss.resteasy.reactive.server.vertx.ResteasyReactiveVertxHandler.handle(ResteasyReactiveVertxHandler.java:10)\r\n\tat io.vertx.ext.web.impl.RouteState.handleContext(RouteState.java:1285)\r\n\tat io.vertx.ext.web.impl.RoutingContextImplBase.iterateNext(RoutingContextImplBase.java:177)\r\n\tat io.vertx.ext.web.impl.RoutingContextImpl.next(RoutingContextImpl.java:137)\r\n\tat io.quarkus.vertx.http.runtime.options.HttpServerCommonHandlers$1.handle(HttpServerCommonHandlers.java:62)\r\n\tat io.quarkus.vertx.http.runtime.options.HttpServerCommonHandlers$1.handle(HttpServerCommonHandlers.java:40)\r\n\tat io.vertx.ext.web.impl.RouteState.handleContext(RouteState.java:1285)\r\n\tat io.vertx.ext.web.impl.RoutingContextImplBase.iterateNext(RoutingContextImplBase.java:177)\r\n\tat io.vertx.ext.web.impl.RoutingContextImpl.next(RoutingContextImpl.java:137)\r\n\tat io.quarkus.resteasy.reactive.server.runtime.ResteasyReactiveRecorder$13.handle(ResteasyReactiveRecorder.java:358)\r\n\tat io.quarkus.resteasy.reactive.server.runtime.ResteasyReactiveRecorder$13.handle(ResteasyReactiveRecorder.java:347)\r\n\tat io.vertx.ext.web.impl.RouteState.handleContext(RouteState.java:1285)\r\n\tat io.vertx.ext.web.impl.RoutingContextImplBase.iterateNext(RoutingContextImplBase.java:177)\r\n\tat io.vertx.ext.web.impl.RoutingContextImpl.next(RoutingContextImpl.java:137)\r\n\tat io.quarkus.vertx.http.runtime.devmode.VertxHttpHotReplacementSetup.handleHotReplacementRequest(VertxHttpHotReplacementSetup.java:144)\r\n\tat io.quarkus.vertx.http.runtime.VertxHttpRecorder$5.handle(VertxHttpRecorder.java:448)\r\n\tat io.quarkus.vertx.http.runtime.VertxHttpRecorder$5.handle(VertxHttpRecorder.java:444)\r\n\tat io.vertx.ext.web.impl.RouteState.handleContext(RouteState.java:1285)\r\n\tat io.vertx.ext.web.impl.RoutingContextImplBase.iterateNext(RoutingContextImplBase.java:177)\r\n\tat io.vertx.ext.web.impl.RoutingContextImpl.next(RoutingContextImpl.java:137)\r\n\tat io.vertx.ext.web.impl.RouterImpl.handle(RouterImpl.java:68)\r\n\tat io.vertx.ext.web.impl.RouterImpl.handle(RouterImpl.java:37)\r\n\tat io.quarkus.vertx.http.runtime.options.HttpServerCommonHandlers$2.handle(HttpServerCommonHandlers.java:86)\r\n\tat io.quarkus.vertx.http.runtime.options.HttpServerCommonHandlers$2.handle(HttpServerCommonHandlers.java:69)\r\n\tat io.quarkus.vertx.http.runtime.VertxHttpRecorder$1.handle(VertxHttpRecorder.java:173)\r\n\tat io.quarkus.vertx.http.runtime.VertxHttpRecorder$1.handle(VertxHttpRecorder.java:149)\r\n\tat io.quarkus.vertx.http.runtime.devmode.VertxHttpHotReplacementSetup$5.handle(VertxHttpHotReplacementSetup.java:202)\r\n\tat io.quarkus.vertx.http.runtime.devmode.VertxHttpHotReplacementSetup$5.handle(VertxHttpHotReplacementSetup.java:192)\r\n\tat io.vertx.core.impl.future.FutureImpl$4.onSuccess(FutureImpl.java:176)\r\n\tat io.vertx.core.impl.future.FutureBase.lambda$emitSuccess$0(FutureBase.java:60)\r\n\tat io.netty.util.concurrent.AbstractEventExecutor.runTask(AbstractEventExecutor.java:173)\r\n\tat io.netty.util.concurrent.AbstractEventExecutor.safeExecute(AbstractEventExecutor.java:166)\r\n\tat io.netty.util.concurrent.SingleThreadEventExecutor.runAllTasks(SingleThreadEventExecutor.java:470)\r\n\tat io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:569)\r\n\tat io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:997)\r\n\tat io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)\r\n\tat io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)\r\n\tat java.base/java.lang.Thread.run(Thread.java:1570)"
+}
 ```
-
-It produces the `quarkus-run.jar` file in the `target/quarkus-app/` directory.
-Be aware that it’s not an _über-jar_ as the dependencies are copied into the `target/quarkus-app/lib/` directory.
-
-The application is now runnable using `java -jar target/quarkus-app/quarkus-run.jar`.
-
-If you want to build an _über-jar_, execute the following command:
-
-```shell script
-./mvnw package -Dquarkus.package.jar.type=uber-jar
-```
-
-The application, packaged as an _über-jar_, is now runnable using `java -jar target/*-runner.jar`.
-
-## Creating a native executable
-
-You can create a native executable using:
-
-```shell script
-./mvnw package -Dnative
-```
-
-Or, if you don't have GraalVM installed, you can run the native executable build in a container using:
-
-```shell script
-./mvnw package -Dnative -Dquarkus.native.container-build=true
-```
-
-You can then execute your native executable with: `./target/quarkus-parameter-map-issue-1.0.0-SNAPSHOT-runner`
-
-If you want to learn more about building native executables, please consult <https://quarkus.io/guides/maven-tooling>.
-
-## Related Guides
-
-- REST ([guide](https://quarkus.io/guides/rest)): A Jakarta REST implementation utilizing build time processing and Vert.x. This extension is not compatible with the quarkus-resteasy extension, or any of the extensions that depend on it.
-- MongoDB with Panache ([guide](https://quarkus.io/guides/mongodb-panache)): Simplify your persistence code for MongoDB via the active record or the repository pattern
-- SmallRye OpenAPI ([guide](https://quarkus.io/guides/openapi-swaggerui)): Document your REST APIs with OpenAPI - comes with Swagger UI
-
-## Provided Code
-
-### REST
-
-Easily start your REST Web Services
-
-[Related guide section...](https://quarkus.io/guides/getting-started-reactive#reactive-jax-rs-resources)
