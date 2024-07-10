@@ -18,27 +18,20 @@ public class CompanyRepository implements ReactivePanacheMongoRepository<Company
         return persist(companyList);
     }
 
-    public Uni<List<Company>> findByName(String name) {
-        return find("name = ?1", name).list();
-    }
-
-    public Uni<List<Company>> findByNameRegex(String name) {
-        return find("name like ?1", "/" + name + "/i").list();
-    }
-
-    public Uni<List<Company>> findByEmail(List<String> emails) {
+    public Uni<List<Company>> findByEmailWithoutRegex(List<String> emails) {
         return find("emails in ?1", emails).list();
     }
 
     public Uni<List<Company>> findByEmailRegex(List<String> emails) {
         var modifiedEmail = emails.stream().map(email -> "/" + email + "/i").toArray();
         return find("emails in ?1", modifiedEmail).list();
-//        return find("{ emails: { $in : [ /email1@email.com/ ] } }").list();
-//        return find("{ emails: { $in : [ " + String.join(",", modifiedEmail) + " ] } }").list();
-//        return find("emails in ?1", String.join(",", modifiedEmail)).list();
     }
-//    public Uni<Company> normalInQuery(){
-//        return find("emails in :", )
-//    }
 
+    public Uni<List<Company>> workingRegexFindInListSingle(String email) {
+        return find("{ emails: { $in : [ /" + email + "/ ] } }").list();
+    }
+
+    public Uni<List<Company>> regexFindInListSingle(String email) {
+        return find("emails in ?1", "/" + email + "/").list();
+    }
 }

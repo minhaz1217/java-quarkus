@@ -1,7 +1,6 @@
 package com.minhazul;
 
 import io.smallrye.mutiny.Uni;
-import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
@@ -26,21 +25,9 @@ public class CompanyResource {
     }
 
     @POST
-    @Path("findByName")
-    public Uni<List<Company>> findByName() {
-        return companyRepository.findByName("Company 1");
-    }
-
-    @POST
-    @Path("findByNameRegex")
-    public Uni<List<Company>> findByNameRegex() {
-        return companyRepository.findByNameRegex("company");
-    }
-
-    @POST
     @Path("findByEmail")
     public Uni<List<Company>> findByEmail() {
-        return companyRepository.findByEmail(Arrays.asList("email1@email.com", "email2@email.com"));
+        return companyRepository.findByEmailWithoutRegex(Arrays.asList("email1@email.com", "email2@email.com"));
     }
 
     @POST
@@ -48,4 +35,17 @@ public class CompanyResource {
     public Uni<List<Company>> findByEmailRegex() {
         return companyRepository.findByEmailRegex(Arrays.asList("email"));
     }
+
+    @POST
+    @Path("workingRegexFindInListSingle")
+    public Uni<List<Company>> workingRegexFindInListSingle() {
+        return companyRepository.workingRegexFindInListSingle("@email.com");
+    }
+
+    @POST
+    @Path("regexFindInListSingle")
+    public Uni<List<Company>> regexFindInListSingle() {
+        return companyRepository.regexFindInListSingle("@email.com");
+    }
+
 }
