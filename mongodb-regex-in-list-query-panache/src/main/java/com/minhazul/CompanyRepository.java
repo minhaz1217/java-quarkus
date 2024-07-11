@@ -22,7 +22,7 @@ public class CompanyRepository implements ReactivePanacheMongoRepository<Company
         return find("emails in ?1", emails).list();
     }
 
-    public Uni<List<Company>> findByEmailRegex(List<String> emails) {
+    public Uni<List<Company>> findByEmailRegexNotWorking(List<String> emails) {
         var modifiedEmail = emails.stream().map(email -> "/" + email + "/i").toArray();
         return find("emails in ?1", modifiedEmail).list();
     }
@@ -31,7 +31,7 @@ public class CompanyRepository implements ReactivePanacheMongoRepository<Company
         return find("{ emails: { $in : [ /" + email + "/ ] } }").list();
     }
 
-    public Uni<List<Company>> regexFindInListSingle(String email) {
+    public Uni<List<Company>> notWorkingRegexFindInListSingle(String email) {
         return find("emails in ?1", "/" + email + "/").list();
     }
 }

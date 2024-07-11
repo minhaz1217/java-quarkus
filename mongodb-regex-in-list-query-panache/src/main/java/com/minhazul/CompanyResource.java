@@ -31,9 +31,9 @@ public class CompanyResource {
     }
 
     @POST
-    @Path("findByEmailRegex")
+    @Path("findByEmailRegexNotWorking")
     public Uni<List<Company>> findByEmailRegex() {
-        return companyRepository.findByEmailRegex(Arrays.asList("email"));
+        return companyRepository.findByEmailRegexNotWorking(Arrays.asList("email"));
     }
 
     @POST
@@ -43,9 +43,9 @@ public class CompanyResource {
     }
 
     @POST
-    @Path("regexFindInListSingle")
-    public Uni<List<Company>> regexFindInListSingle() {
-        return companyRepository.regexFindInListSingle("@email.com");
+    @Path("notWorkingRegexFindInListSingle")
+    public Uni<List<Company>> notWorkingRegexFindInListSingle() {
+        return companyRepository.notWorkingRegexFindInListSingle("@email.com");
     }
 
 }
